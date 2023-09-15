@@ -3,13 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.5.33627.172
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shelfie.Domain", "Shelfie.Domain\Shelfie.Domain.csproj", "{785EFB75-603A-4074-AEE5-9FAB554A9301}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shelfie.Domain", "Shelfie.Domain\Shelfie.Domain.csproj", "{785EFB75-603A-4074-AEE5-9FAB554A9301}"
+	ProjectSection(ProjectDependencies) = postProject
+		{01EA69B8-0E6A-423B-BCE7-88BC36AB153C} = {01EA69B8-0E6A-423B-BCE7-88BC36AB153C}
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shelfie.Repository", "Shelfie.Repository\Shelfie.Repository.csproj", "{01EA69B8-0E6A-423B-BCE7-88BC36AB153C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shelfie.Repository", "Shelfie.Repository\Shelfie.Repository.csproj", "{01EA69B8-0E6A-423B-BCE7-88BC36AB153C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{4C6652D2-4246-4CE8-8CF3-F80BB4D131F2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shelfie.Api", "Shelfie.Api\Shelfie.Api.csproj", "{110F2399-6BE1-4EFA-9368-9B7EFC1F35C7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shelfie.Api", "Shelfie.Api\Shelfie.Api.csproj", "{110F2399-6BE1-4EFA-9368-9B7EFC1F35C7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{785EFB75-603A-4074-AEE5-9FAB554A9301} = {785EFB75-603A-4074-AEE5-9FAB554A9301}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
