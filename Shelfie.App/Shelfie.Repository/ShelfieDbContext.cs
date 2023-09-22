@@ -1,10 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
-using Shelfie.Repository.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Shelfie.Repository.Entities;
 
 namespace Shelfie.Repository
 {

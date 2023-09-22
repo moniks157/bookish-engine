@@ -1,4 +1,6 @@
-﻿namespace Shelfie.Domain.Services;
+﻿using Shelfie.Domain.Services.Interfaces;
+
+namespace Shelfie.Domain.Services;
 
 public class PasswordHasher : IPasswordHasher
 {
@@ -11,8 +13,12 @@ public class PasswordHasher : IPasswordHasher
         }
     }
 
-    public byte[] GenerateSalt()
+    public bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
     {
-        throw new NotImplementedException();
+        using (var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
+        {
+            var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            return computedHash.SequenceEqual(passwordHash);
+        }
     }
 }

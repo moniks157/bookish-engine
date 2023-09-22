@@ -1,4 +1,4 @@
-﻿namespace Shelfie.Repository.Models;
+﻿namespace Shelfie.Repository.Entities;
 
 public class User
 {

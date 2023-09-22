@@ -1,4 +1,4 @@
-﻿using Shelfie.Repository.Models;
+﻿using Shelfie.Repository.Entities;
 using Shelfie.Repository.Repositories.Interfaces;
 
 namespace Shelfie.Repository.Repositories;
@@ -27,5 +27,10 @@ public class UserRepository : IUserRepository
         _context.Users.Add(user);
         _context.SaveChanges();
         return user;
+    }
+
+    public bool ExistsUser(string username)
+    {
+        return _context.Users.Any(u => u.Username == username);
     }
 }

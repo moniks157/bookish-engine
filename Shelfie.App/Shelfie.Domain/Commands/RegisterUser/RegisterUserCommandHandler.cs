@@ -1,9 +1,10 @@
-﻿using MediatR;
-using Shelfie.Domain.Services;
-using Shelfie.Repository.Models;
+﻿using EnsureThat;
+using MediatR;
+using Shelfie.Domain.Services.Interfaces;
+using Shelfie.Repository.Entities;
 using Shelfie.Repository.Repositories.Interfaces;
 
-namespace Shelfie.Domain.Commands;
+namespace Shelfie.Domain.Commands.RegisterUser;
 
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, User>
 {
@@ -18,12 +19,12 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, U
 
     public async Task<User> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        if (request == null)
+        Ensure.That(request).IsNotNull();
+
+        if (_userRepository.ExistsUser(request.Username))
         {
             return null;
         }
-
-        //validate if user exists
 
         _passwordHasher.CreatePasswordHash(request.Password, out var passwordHash, out var passwordSalt);
 
