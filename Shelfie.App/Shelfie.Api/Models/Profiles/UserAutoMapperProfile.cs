@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
-using Shelfie.Domain.Commands.LoginUser;
-using Shelfie.Domain.Commands.RegisterUser;
+using Shelfie.Domain.UseCases.LoginUser;
+using Shelfie.Domain.UseCases.RegisterUser;
 
 namespace Shelfie.Api.Models.Profiles
 {

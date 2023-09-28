@@ -1,9 +1,8 @@
-﻿using EnsureThat;
-using MediatR;
+﻿using MediatR;
 using Shelfie.Domain.Services.Interfaces;
 using Shelfie.Repository.Repositories.Interfaces;
 
-namespace Shelfie.Domain.Commands.LoginUser
+namespace Shelfie.Domain.UseCases.LoginUser
 {
     public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, string>
     {
@@ -20,8 +19,6 @@ namespace Shelfie.Domain.Commands.LoginUser
 
         public async Task<string> Handle(LoginUserCommand request, CancellationToken cancellationToken)
         {
-            Ensure.That(request).IsNotNull();
-
             var user = _userRepository.GetUser(request.Username);
 
             if (user == null) { return null!; }

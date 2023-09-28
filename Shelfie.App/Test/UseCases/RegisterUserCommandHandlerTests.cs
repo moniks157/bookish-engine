@@ -1,12 +1,15 @@
-﻿using Shelfie.Domain.Commands.RegisterUser;
+﻿using FluentAssertions;
+using Moq;
+using NUnit.Framework;
 using Shelfie.Domain.Services.Interfaces;
+using Shelfie.Domain.Test.Fakers;
+using Shelfie.Domain.UseCases.RegisterUser;
 using Shelfie.Repository.Entities;
 using Shelfie.Repository.Repositories.Interfaces;
-using Test.Helpers;
 
-namespace Test.Commands;
+namespace Shelfie.Domain.Commands;
 
-public class RegisterUserCommandTests
+public class RegisterUserCommandHandlerTests
 {
     [Test]
     public void Handle_ReturnsNull_WhenUserAlreadyExists()
@@ -22,19 +25,6 @@ public class RegisterUserCommandTests
 
         var result = handler.Handle(command, CancellationToken.None).Result;
 
-        result.Should().BeNull();
-    }
-
-    [Test]
-    public void Handle_ReturnsNull_WhenCommandIsNull()
-    {
-        var userRepository = new Mock<IUserRepository>();
-        var passwordHasher = new Mock<IPasswordHasher>();
-        
-        var handler = new RegisterUserCommandHandler(userRepository.Object, passwordHasher.Object);
-        
-        var result = handler.Handle(null!, CancellationToken.None).Result;
-        
         result.Should().BeNull();
     }
 

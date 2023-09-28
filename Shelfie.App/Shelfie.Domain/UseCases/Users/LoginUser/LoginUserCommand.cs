@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace Shelfie.Domain.Commands.LoginUser;
+namespace Shelfie.Domain.UseCases.LoginUser;
 
 public class LoginUserCommand : IRequest<string>
 {

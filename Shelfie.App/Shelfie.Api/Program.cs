@@ -3,9 +3,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using Shelfie.Domain.Commands.RegisterUser;
 using Shelfie.Domain.Services;
 using Shelfie.Domain.Services.Interfaces;
+using Shelfie.Domain.UseCases.RegisterUser;
 using Shelfie.Repository;
 using Shelfie.Repository.Repositories;
 using Shelfie.Repository.Repositories.Interfaces;
@@ -21,6 +21,7 @@ builder.Services.AddDbContext<ShelfieDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DBConnection")));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IBookRepository, BookRepository>();
 builder.Services.AddScoped<IPasswordHasher, PasswordHasher>();
 builder.Services.AddScoped<IJwtManager, JwtManager>();
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(typeof(RegisterUserCommand).Assembly));

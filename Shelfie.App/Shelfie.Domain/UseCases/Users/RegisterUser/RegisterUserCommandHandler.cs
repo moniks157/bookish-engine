@@ -4,9 +4,9 @@ using Shelfie.Domain.Services.Interfaces;
 using Shelfie.Repository.Entities;
 using Shelfie.Repository.Repositories.Interfaces;
 
-namespace Shelfie.Domain.Commands.RegisterUser;
+namespace Shelfie.Domain.UseCases.RegisterUser;
 
-public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, User>
+public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, User?>
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
@@ -17,7 +17,7 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, U
         _passwordHasher = passwordHasher;
     }
 
-    public async Task<User> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<User?> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         Ensure.That(request).IsNotNull();
 

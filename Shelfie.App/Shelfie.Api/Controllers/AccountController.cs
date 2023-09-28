@@ -2,8 +2,8 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Shelfie.Api.Models;
-using Shelfie.Domain.Commands.LoginUser;
-using Shelfie.Domain.Commands.RegisterUser;
+using Shelfie.Domain.UseCases.LoginUser;
+using Shelfie.Domain.UseCases.RegisterUser;
 
 namespace Shelfie.Api.Controllers
 {
@@ -21,18 +21,26 @@ namespace Shelfie.Api.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register([FromBody] RegisterUserModel registerUserModel)
+        public async Task<IActionResult> Register([FromBody] RegisterUserModel registerUserModel)
         {
             var command  = _mapper.Map<RegisterUserCommand>(registerUserModel); 
-            var user = _mediator.Send(command);
-            return Ok(user);
+            var user = await _mediator.Send(command);
+
+            if (user == null)
+                return BadRequest("User already exists");
+
+            return Ok();
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginUserModel loginUserModel)
+        public async Task<IActionResult> Login([FromBody] LoginUserModel loginUserModel)
         {
             var command = _mapper.Map<LoginUserCommand>(loginUserModel);
-            var token = _mediator.Send(command);
+            var token = await _mediator.Send(command);
+
+            if (token == null)
+                return BadRequest("Invalid credentials");
+
             return Ok(token);
         }
     }
