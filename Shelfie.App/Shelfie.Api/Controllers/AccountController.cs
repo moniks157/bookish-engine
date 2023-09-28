@@ -1,73 +1,47 @@
-﻿using System.Security.Claims;
+﻿using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 using Shelfie.Api.Models;
+using Shelfie.Domain.UseCases.LoginUser;
+using Shelfie.Domain.UseCases.RegisterUser;
 
 namespace Shelfie.Api.Controllers
 {
-
-
     [Route("api/[controller]")]
     [ApiController]
     public class AccountController : ControllerBase
     {
-        public static User user = new User();
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        [HttpPost("regiser")]
-        public IActionResult Register([FromBody] UserDto userDto)
+        public AccountController(IMediator mediator, IMapper mapper)
         {
-            CreatePasswordHash(userDto.Password, out byte[] passwordHash, out byte[] passwordSalt);
+            _mediator = mediator;
+            _mapper = mapper;
+        }
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+        [HttpPost("register")]
+        public async Task<IActionResult> Register([FromBody] RegisterUserModel registerUserModel)
+        {
+            var command  = _mapper.Map<RegisterUserCommand>(registerUserModel); 
+            var user = await _mediator.Send(command);
 
-            return Ok(user);
+            if (user == null)
+                return BadRequest("User already exists");
+
+            return Ok();
         }
 
         [HttpPost("login")]
-        public IActionResult Login([FromBody] UserDto userDto)
+        public async Task<IActionResult> Login([FromBody] LoginUserModel loginUserModel)
         {
-            if(userDto.Username != user.Username)
-            {
-                return Unauthorized();
-            }
+            var command = _mapper.Map<LoginUserCommand>(loginUserModel);
+            var token = await _mediator.Send(command);
 
-            if(!VerifyPasswordHash(userDto.Password, user.PasswordHash, user.PasswordSalt))
-            {
-                return Unauthorized();
-            }
-
-            string token = "token";
+            if (token == null)
+                return BadRequest("Invalid credentials");
 
             return Ok(token);
-        }
-
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using(var hmac = new System.Security.Cryptography.HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using(var hmac = new System.Security.Cryptography.HMACSHA512(passwordSalt))
-            {
-                var computedHash = hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
-        }
-
-        private string CreateToken(User user)
-        {
-            List<Claim> claims = new List<Claim>
-            { 
-                new Claim(ClaimTypes.Name, user.Username)
-            };
-
-            var key = new SymmetricSecurityKey(GetBytes())
         }
     }
 }

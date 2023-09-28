@@ -1,6 +1,6 @@
 ﻿namespace Shelfie.Api.Models
 {
-    public class UserDto
+    public class LoginUserModel
     {
         public string Username { get; set; }
 
