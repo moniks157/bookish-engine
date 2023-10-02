@@ -21,6 +21,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shelfie.Api.Test", "Shelfie
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Shelfie.Domain.Test", "Shelfie.Domain.Test\Shelfie.Domain.Test.csproj", "{72624574-D32C-4653-935E-0686E01B2E5C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shelfie.Server", "Shelfie.Server\Shelfie.Server.csproj", "{3CD6CFC1-4C89-424D-A533-4CA812F26CB0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -47,6 +49,10 @@ Global
 		{72624574-D32C-4653-935E-0686E01B2E5C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72624574-D32C-4653-935E-0686E01B2E5C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72624574-D32C-4653-935E-0686E01B2E5C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3CD6CFC1-4C89-424D-A533-4CA812F26CB0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3CD6CFC1-4C89-424D-A533-4CA812F26CB0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CD6CFC1-4C89-424D-A533-4CA812F26CB0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3CD6CFC1-4C89-424D-A533-4CA812F26CB0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
