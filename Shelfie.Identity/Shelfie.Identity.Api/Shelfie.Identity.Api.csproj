@@ -20,7 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Shelfie.Identity.BusinessLogic\Shelfie.Identity.BusinessLogic.csproj" />
+    <ProjectReference Include="..\Shelfie.Identity.DataAccess\Shelfie.Identity.DataAccess.csproj" />
   </ItemGroup>
 
 </Project>
