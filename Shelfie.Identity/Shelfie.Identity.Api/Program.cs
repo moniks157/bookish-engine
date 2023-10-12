@@ -1,47 +1,34 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Shelfie.Identity.DataAccess;
+using Shelfie.Identity.BusinessLogic.Services;
+using Shelfie.Identity.BusinessLogic.Services.Interfaces;
+using Shelfie.Identity.BusinessLogic.UseCases.LoginUser;
 using Shelfie.Identity.DataAccess.Data;
 
-var seed = args.Contains("/seed");
-if (seed)
-{
-    args = args.Except(new[] { "/seed" }).ToArray();
-}
-
 var builder = WebApplication.CreateBuilder(args);
-var assembly = typeof(AspNetIdentityDbContext).Assembly.GetName().Name;
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+var assembly = typeof(LoginUserCommand).Assembly;
+ConfigurationManager configuration = builder.Configuration;
+var connectionString = configuration.GetConnectionString("DefaultConnection");
 
-if (seed)
-{
-    SeedData.EnsureSeedData(connectionString);
-}
+//Register DbContext
+builder.Services.AddDbContext<AspNetIdentityDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+//Register Identity
+builder.Services.AddIdentity<IdentityUser, IdentityRole>()
+    .AddEntityFrameworkStores<AspNetIdentityDbContext>()
+    .AddDefaultTokenProviders();
+
+//Register MeddiatR
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assembly));
+
+//Register Services
+builder.Services.AddTransient<IJwtService, JwtService>();
 
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddDbContext<AspNetIdentityDbContext>(options =>
-    options.UseSqlServer(connectionString));
-
-builder.Services.AddIdentity<IdentityUser, IdentityRole>()
-    .AddEntityFrameworkStores<AspNetIdentityDbContext>();
-
-builder.Services.AddIdentityServer()
-    .AddAspNetIdentity<IdentityUser>()
-    .AddConfigurationStore(options =>
-    {
-        options.ConfigureDbContext = b =>
-            b.UseSqlServer(connectionString, b => b.MigrationsAssembly(assembly));
-    })
-    .AddOperationalStore(options =>
-    {
-        options.ConfigureDbContext = b =>
-            b.UseSqlServer(connectionString, b => b.MigrationsAssembly(assembly));
-    })
-    .AddDeveloperSigningCredential();
 
 var app = builder.Build();
 
@@ -53,7 +40,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseIdentityServer();
 app.UseAuthorization();
 
 app.MapControllers();
