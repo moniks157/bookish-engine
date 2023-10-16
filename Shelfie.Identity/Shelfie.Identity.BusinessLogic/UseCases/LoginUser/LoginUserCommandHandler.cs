@@ -20,18 +20,19 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, string?
     public async Task<string?> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByNameAsync(request.Username);
-        if (user != null && await _userManager.CheckPasswordAsync(user, request.Password))
+        if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
         {
-            var authClaims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
-
-            var token = _jwtService.GetToken(authClaims);
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            return null;
         }
-        return null;
+
+        var authClaims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.UserName),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        };
+
+        var token = _jwtService.GetToken(authClaims);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
     }
 }

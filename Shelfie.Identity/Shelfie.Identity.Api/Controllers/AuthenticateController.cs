@@ -36,7 +36,9 @@ public class AuthenticateController : ControllerBase
         var result = await _mediator.Send(request);
 
         if (result is null)
-            return Unauthorized();
+        {
+            return BadRequest(Messages.InvalidUsernameOrPassword);
+        }
 
         return Ok(result);
     }
@@ -56,14 +58,14 @@ public class AuthenticateController : ControllerBase
 
         if(result is null)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User already exists!" });
+            return BadRequest(Messages.UserAlreadyExists);
         }
 
         if (!result.Succeeded)
         {
-            return StatusCode(StatusCodes.Status500InternalServerError, new Response { Status = "Error", Message = "User creation failed! Please check user details and try again." });
+            return BadRequest(Messages.UserCreationFailed);
         }
 
-        return Ok(new Response { Status = "Success", Message = "User created successfully!" });
+        return NoContent();
     }
 }
