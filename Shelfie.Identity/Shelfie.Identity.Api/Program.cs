@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Shelfie.Identity.Api.Validators;
+using Shelfie.Identity.BusinessLogic.Options;
 using Shelfie.Identity.BusinessLogic.Services;
 using Shelfie.Identity.BusinessLogic.Services.Interfaces;
 using Shelfie.Identity.BusinessLogic.UseCases.LoginUser;
@@ -11,6 +12,11 @@ var builder = WebApplication.CreateBuilder(args);
 var assembly = typeof(LoginUserCommand).Assembly;
 ConfigurationManager configuration = builder.Configuration;
 var connectionString = configuration.GetConnectionString("DefaultConnection");
+
+//Register options
+JwtOptions options = new();
+builder.Services.Configure<JwtOptions>(
+    builder.Configuration.GetSection(key: nameof(JwtOptions)));
 
 //Register DbContext
 builder.Services.AddDbContext<AspNetIdentityDbContext>(options =>

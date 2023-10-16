@@ -1,29 +1,30 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using Shelfie.Identity.BusinessLogic.Options;
 using Shelfie.Identity.BusinessLogic.Services.Interfaces;
-using Microsoft.Extensions.Configuration;
 
 namespace Shelfie.Identity.BusinessLogic.Services;
 
 public class JwtService : IJwtService
 {
-    private readonly IConfiguration _configuration;
+    private readonly JwtOptions _options;
 
-    public JwtService(IConfiguration configuration)
+    public JwtService(IOptions<JwtOptions> options)
     {
-        _configuration = configuration;
+        _options = options.Value;
     }
 
     public JwtSecurityToken GetToken(List<Claim> claims)
     {
-        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Secret"]!));
+        var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_options.Secret!));
 
         var token = new JwtSecurityToken(
-            issuer: _configuration["JWT:ValidIssuer"],
-            audience: _configuration["JWT:ValidAudience"],
-            expires: DateTime.Now.AddHours(double.Parse(_configuration["JWT:TokenExpiration"]!)),
+            issuer: _options.ValidIssuer,
+            audience: _options.ValidAudience,
+            expires: DateTime.Now.AddHours(_options.TokenExpiration!),
             claims: claims,
             signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
             );
