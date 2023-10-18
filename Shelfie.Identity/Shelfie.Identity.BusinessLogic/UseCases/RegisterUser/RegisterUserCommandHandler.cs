@@ -19,21 +19,16 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
 
     public async Task<OperationResult<string?>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
-        var result = new OperationResult<string?>();
-
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            result.ErrorCode = ErrorCode.InvalidRequest;
-            result.ValidationErrors = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
-            return result;
+            return OperationResult<string?>.ValidationFailure(validationResult.Errors.Select(x => x.ErrorMessage).ToList());
         }
 
         var userExists = await _userManager.FindByNameAsync(request.Username);
         if (userExists != null)
         {
-            result.ErrorCode = ErrorCode.EntityAlreadyExists;
-            return result;
+            return OperationResult<string?>.Failure(ErrorCode.EntityAlreadyExists);
         }
 
         IdentityUser user = new()
@@ -45,12 +40,10 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, O
 
         var identityResult = await _userManager.CreateAsync(user, request.Password);
 
-        result = new OperationResult<string?>
+        return new OperationResult<string?>
         {
-            Success = identityResult.Succeeded,
-            Result = user.Id,
+            IsSuccess = identityResult.Succeeded,
+            Data = user.Id,
         };
-
-        return result;
     }
 }

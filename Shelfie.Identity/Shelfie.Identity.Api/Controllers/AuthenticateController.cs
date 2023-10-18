@@ -30,7 +30,7 @@ public class AuthenticateController : ControllerBase
 
         var result = await _mediator.Send(request);
 
-        if (!result.Success)
+        if (!result.IsSuccess)
         {
             if(result.ErrorCode == BusinessLogic.Enums.ErrorCode.InvalidRequest)
             {
@@ -39,7 +39,7 @@ public class AuthenticateController : ControllerBase
             return BadRequest(Messages.InvalidUsernameOrPassword);
         }
 
-        return Ok(result.Result);
+        return Ok(result.Data);
     }
 
     [HttpPost]
@@ -55,7 +55,7 @@ public class AuthenticateController : ControllerBase
 
         var result = await _mediator.Send(request);
 
-        if(!result.Success)
+        if(!result.IsSuccess)
         {
             if (result.ErrorCode == BusinessLogic.Enums.ErrorCode.InvalidRequest)
             {

@@ -3,5 +3,6 @@
 public enum ErrorCode
 {
     EntityAlreadyExists,
-    InvalidRequest
+    InvalidRequest,
+    InvalidPassword
 }

@@ -24,20 +24,16 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, Operati
 
     public async Task<OperationResult<string?>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
-        var result = new OperationResult<string?>();
-
         var validationResult = await _validator.ValidateAsync(request, cancellationToken);
         if (!validationResult.IsValid)
         {
-            result.ErrorCode = ErrorCode.InvalidRequest;
-            result.ValidationErrors = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
-            return result;
+            return OperationResult<string?>.ValidationFailure(validationResult.Errors.Select(x => x.ErrorMessage).ToList());
         }
 
         var user = await _userManager.FindByNameAsync(request.Username);
         if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))
         {
-            return result;
+            return OperationResult<string?>.Failure(ErrorCode.InvalidPassword);
         }
 
         var authClaims = new List<Claim>
@@ -48,12 +44,6 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, Operati
 
         var token = _jwtService.GetToken(authClaims);
 
-        result = new OperationResult<string?>
-        {
-            Success = true,
-            Result = new JwtSecurityTokenHandler().WriteToken(token),
-        };
-
-        return result;
+        return OperationResult<string?>.Success(new JwtSecurityTokenHandler().WriteToken(token));
     }
 }
