@@ -1,9 +1,12 @@
 ﻿using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Shelfie.Identity.BusinessLogic.Enums;
+using Shelfie.Identity.BusinessLogic.Models;
+using Shelfie.Identity.BusinessLogic.Validators;
 
 namespace Shelfie.Identity.BusinessLogic.UseCases.RegisterUser;
 
-public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, IdentityResult>
+public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, OperationResult<string?>>
 {
     private readonly UserManager<IdentityUser> _userManager;
 
@@ -12,12 +15,16 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, I
         _userManager = userManager;
     }
 
-    public async Task<IdentityResult> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
+    public async Task<OperationResult<string?>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
+        var result = new OperationResult<string?>();
+           
         var userExists = await _userManager.FindByNameAsync(request.Username);
-
         if (userExists != null)
-            return null!;
+        {
+            result.ErrorCode = ErrorCode.EntityAlreadyExists;
+            return result;
+        }
 
         IdentityUser user = new()
         {
@@ -26,7 +33,13 @@ public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, I
             UserName = request.Username
         };
 
-        var result = await _userManager.CreateAsync(user, request.Password);
+        var identityResult = await _userManager.CreateAsync(user, request.Password);
+
+        result = new OperationResult<string?>
+        {
+            Success = identityResult.Succeeded,
+            Result = user.Id,
+        };
 
         return result;
     }

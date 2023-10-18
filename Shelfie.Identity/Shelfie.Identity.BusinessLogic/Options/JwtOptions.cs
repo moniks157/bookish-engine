@@ -1,6 +1,6 @@
 ﻿namespace Shelfie.Identity.BusinessLogic.Options;
 
-public sealed class JwtOptions
+public class JwtOptions
 {
     public string? Secret { get; set; }
     public string? ValidIssuer { get; set; }

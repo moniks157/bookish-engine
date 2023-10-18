@@ -1,11 +1,6 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using MediatR;
-using Microsoft.AspNetCore.Identity;
+﻿using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using Shelfie.Identity.Api.Models;
+using Shelfie.Identity.Api.Dtos;
 using Shelfie.Identity.BusinessLogic.UseCases.LoginUser;
 using Shelfie.Identity.BusinessLogic.UseCases.RegisterUser;
 
@@ -25,7 +20,7 @@ public class AuthenticateController : ControllerBase
 
     [HttpPost]
     [Route("login")]
-    public async Task<IActionResult> Login([FromBody] LoginModel model)
+    public async Task<IActionResult> Login([FromBody] LoginRequestDto model)
     {
         var request = new LoginUserCommand
         {
@@ -35,17 +30,17 @@ public class AuthenticateController : ControllerBase
 
         var result = await _mediator.Send(request);
 
-        if (result is null)
+        if (!result.Success)
         {
             return BadRequest(Messages.InvalidUsernameOrPassword);
         }
 
-        return Ok(result);
+        return Ok(result.Result);
     }
 
     [HttpPost]
     [Route("register")]
-    public async Task<IActionResult> Register([FromBody] RegisterModel model)
+    public async Task<IActionResult> Register([FromBody] RegisterRequestDto model)
     {
         var request = new RegisterUserCommand
         {
@@ -56,14 +51,9 @@ public class AuthenticateController : ControllerBase
 
         var result = await _mediator.Send(request);
 
-        if(result is null)
+        if(!result.Success)
         {
-            return BadRequest(Messages.UserAlreadyExists);
-        }
-
-        if (!result.Succeeded)
-        {
-            return BadRequest(Messages.UserCreationFailed);
+            return BadRequest(result.ErrorCode == BusinessLogic.Enums.ErrorCode.EntityAlreadyExists ? Messages.UserAlreadyExists : Messages.UserCreationFailed);
         }
 
         return NoContent();

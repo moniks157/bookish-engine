@@ -1,8 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿namespace Shelfie.Identity.Api.Dtos;
 
-namespace Shelfie.Identity.Api.Models;
-
-public class RegisterModel
+public class RegisterRequestDto
 {
     public string? Username { get; set; }
 
