@@ -1,11 +1,11 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Shelfie.Identity.Api.Validators;
 using Shelfie.Identity.BusinessLogic.Options;
 using Shelfie.Identity.BusinessLogic.Services;
 using Shelfie.Identity.BusinessLogic.Services.Interfaces;
 using Shelfie.Identity.BusinessLogic.UseCases.LoginUser;
+using Shelfie.Identity.BusinessLogic.Validators;
 using Shelfie.Identity.DataAccess.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -28,7 +28,7 @@ builder.Services.AddIdentity<IdentityUser, IdentityRole>()
     .AddDefaultTokenProviders();
 
 //Register Validators
-builder.Services.AddValidatorsFromAssemblyContaining<LoginModelValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<LoginUserCommandValidator>();
 
 //Register MeddiatR
 builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assembly));

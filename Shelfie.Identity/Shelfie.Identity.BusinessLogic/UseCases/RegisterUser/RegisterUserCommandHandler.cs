@@ -9,16 +9,26 @@ namespace Shelfie.Identity.BusinessLogic.UseCases.RegisterUser;
 public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, OperationResult<string?>>
 {
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly RegisterUserCommandValidator _validator;
 
-    public RegisterUserCommandHandler(UserManager<IdentityUser> userManager)
+    public RegisterUserCommandHandler(UserManager<IdentityUser> userManager, RegisterUserCommandValidator validator)
     {
         _userManager = userManager;
+        _validator = validator;
     }
 
     public async Task<OperationResult<string?>> Handle(RegisterUserCommand request, CancellationToken cancellationToken)
     {
         var result = new OperationResult<string?>();
-           
+
+        var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            result.ErrorCode = ErrorCode.InvalidRequest;
+            result.ValidationErrors = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
+            return result;
+        }
+
         var userExists = await _userManager.FindByNameAsync(request.Username);
         if (userExists != null)
         {

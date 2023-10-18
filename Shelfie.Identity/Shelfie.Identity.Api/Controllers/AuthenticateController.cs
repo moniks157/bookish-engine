@@ -32,6 +32,10 @@ public class AuthenticateController : ControllerBase
 
         if (!result.Success)
         {
+            if(result.ErrorCode == BusinessLogic.Enums.ErrorCode.InvalidRequest)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
             return BadRequest(Messages.InvalidUsernameOrPassword);
         }
 
@@ -53,6 +57,10 @@ public class AuthenticateController : ControllerBase
 
         if(!result.Success)
         {
+            if (result.ErrorCode == BusinessLogic.Enums.ErrorCode.InvalidRequest)
+            {
+                return BadRequest(result.ValidationErrors);
+            }
             return BadRequest(result.ErrorCode == BusinessLogic.Enums.ErrorCode.EntityAlreadyExists ? Messages.UserAlreadyExists : Messages.UserCreationFailed);
         }
 

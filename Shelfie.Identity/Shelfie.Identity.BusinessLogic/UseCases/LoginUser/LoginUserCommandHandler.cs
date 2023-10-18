@@ -13,16 +13,26 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, Operati
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly IJwtService _jwtService;
+    private readonly LoginUserCommandValidator _validator;
 
-    public LoginUserCommandHandler(UserManager<IdentityUser> userManager, IJwtService jwtService)
+    public LoginUserCommandHandler(UserManager<IdentityUser> userManager, IJwtService jwtService, LoginUserCommandValidator validator)
     {
         _userManager = userManager;
         _jwtService = jwtService;
+        _validator = validator;
     }
 
     public async Task<OperationResult<string?>> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         var result = new OperationResult<string?>();
+
+        var validationResult = await _validator.ValidateAsync(request, cancellationToken);
+        if (!validationResult.IsValid)
+        {
+            result.ErrorCode = ErrorCode.InvalidRequest;
+            result.ValidationErrors = validationResult.Errors.Select(x => x.ErrorMessage).ToList();
+            return result;
+        }
 
         var user = await _userManager.FindByNameAsync(request.Username);
         if (user == null || !await _userManager.CheckPasswordAsync(user, request.Password))

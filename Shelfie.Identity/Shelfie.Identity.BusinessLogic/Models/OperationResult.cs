@@ -9,4 +9,5 @@ public class OperationResult<T>
     public T? Result { get; set; }
 
     public ErrorCode ErrorCode { get; set; }
+    public List<string> ValidationErrors { get; internal set; }
 }

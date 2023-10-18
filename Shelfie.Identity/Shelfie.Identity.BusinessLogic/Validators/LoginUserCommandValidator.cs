@@ -1,12 +1,12 @@
 ﻿using FluentValidation;
-using Shelfie.Identity.Api.Models;
-using Shelfie.Identity.Api.Validators.Messages;
+using Shelfie.Identity.BusinessLogic.UseCases.LoginUser;
+using Shelfie.Identity.BusinessLogic.Validators.Messages;
 
-namespace Shelfie.Identity.Api.Validators;
+namespace Shelfie.Identity.BusinessLogic.Validators;
 
-public class LoginModelValidator : AbstractValidator<LoginModel>
+public class LoginUserCommandValidator : AbstractValidator<LoginUserCommand>
 {
-    public LoginModelValidator() 
+    public LoginUserCommandValidator() 
     {
         RuleFor(x => x.Username)
             .NotEmpty()
