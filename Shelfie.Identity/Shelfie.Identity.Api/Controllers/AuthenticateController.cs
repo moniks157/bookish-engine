@@ -66,4 +66,12 @@ public class AuthenticateController : ControllerBase
 
         return NoContent();
     }
+
+    [HttpPost]
+    [Route("external-login")]
+    public async Task<IActionResult> ExternalLogin()
+    {
+
+        return Ok();
+    }
 }
